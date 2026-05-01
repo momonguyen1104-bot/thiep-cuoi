@@ -2697,7 +2697,7 @@
             JSON.stringify(rsvpData)
           );
 
-          showRsvpSuccess(name, rsvpChoice, guests, false, "");
+          showRsvpSuccess(name, rsvpChoice, guests, false, note);
           showToast(
             rsvpChoice === "yes"
               ? "🎊 Cảm ơn " + name + "! Hẹn gặp ngày 20/05/2026!"
@@ -2718,7 +2718,7 @@
         btn.textContent = "Gửi Xác Nhận";
       }
 
-      function showRsvpSuccess(name, attending, guests, isExisting) {
+      function showRsvpSuccess(name, attending, guests, isExisting, note = "") {
         document.getElementById("rsvpForm").style.display = "none";
         const successDiv = document.getElementById("rsvpSuccess");
         successDiv.classList.add("show");
