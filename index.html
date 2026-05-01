@@ -2524,7 +2524,9 @@
           initScrollObserver();
           initNavDots();
           tryAutoPlayMusic();
+          loadWishesFromSheets();
         }, 800);
+
       }
 
       // ===== PETALS =====
@@ -2673,6 +2675,7 @@
         btn.textContent = "Đang gửi...";
 
         const rsvpData = {
+          type: "rsvp",
           name: name,
           guests: guests,
           attending: rsvpChoice,
@@ -2751,35 +2754,80 @@
       }
 
       // ===== GUESTBOOK =====
-      function submitWish() {
+      async function submitWish() {
         const name = document.getElementById("wishName").value.trim();
         const text = document.getElementById("wishText").value.trim();
+
         if (!name || !text) {
           showToast("💝 Vui lòng điền tên và lời chúc!");
           return;
         }
-        const id = Date.now();
+
         try {
+          // Gửi lên Google Sheets
+          await fetch(API_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type: "wish", // ← THÊM DÒNG NÀY
+              name: name,
+              message: text,
+              guestKey: guestKey || "guest_" + Date.now(),
+              timestamp: new Date().toISOString(),
+            }),
+          });
+
+          // Lưu local backup
           const wishes = JSON.parse(
             localStorage.getItem(STORAGE_KEY_WISHES) || "[]"
           );
-          wishes.push({ id, name, text, ts: new Date().toISOString() });
+          wishes.push({
+            id: Date.now(),
+            name,
+            text,
+            ts: new Date().toISOString(),
+          });
           localStorage.setItem(STORAGE_KEY_WISHES, JSON.stringify(wishes));
-        } catch (e) {}
-        const card = document.createElement("div");
-        card.className = "wish-card";
-        card.dataset.id = id;
-        card.innerHTML = `<div class="wish-name">${escapeHtml(
-          name
-        )}</div><div class="wish-text">"${escapeHtml(text)}"</div>`;
-        document
-          .getElementById("wishesList")
-          .insertBefore(card, document.getElementById("wishesList").firstChild);
-        document.getElementById("wishName").value = "";
-        document.getElementById("wishText").value = "";
-        showToast("🌸 Cảm ơn bạn! Lời chúc đã được lưu!");
+
+          // Tải lại danh sách từ Sheet
+          await loadWishesFromSheet();
+
+          document.getElementById("wishName").value = "";
+          document.getElementById("wishText").value = "";
+          showToast("🌸 Cảm ơn bạn! Lời chúc đã được gửi!");
+        } catch (error) {
+          console.error("Lỗi gửi lời chúc:", error);
+          showToast("⚠️ Có lỗi xảy ra, vui lòng thử lại!");
+        }
       }
 
+      // Thêm hàm loadWishesFromSheet
+      async function loadWishesFromSheet() {
+        try {
+          const response = await fetch(API_URL + "?type=wishes");
+          const wishes = await response.json();
+
+          const list = document.getElementById("wishesList");
+          if (!list) return;
+
+          if (wishes && wishes.length > 0) {
+            list.innerHTML = "";
+            wishes.reverse().forEach((w) => {
+              const card = document.createElement("div");
+              card.className = "wish-card";
+              card.innerHTML = `<div class="wish-name">📝 ${escapeHtml(
+                w.Name || w.name
+              )}</div><div class="wish-text">"${escapeHtml(
+                w.Message || w.message
+              )}"</div>`;
+              list.appendChild(card);
+            });
+          }
+        } catch (e) {
+          console.log("Cannot load wishes from sheet");
+        }
+      }
       function escapeHtml(s) {
         return s
           .replace(/&/g, "&amp;")

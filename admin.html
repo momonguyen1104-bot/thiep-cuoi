@@ -1295,10 +1295,11 @@
         );
       }
 
-      function addToSavedList() {
+      async function addToSavedList() {
         const name = document.getElementById("guestNameInput").value.trim();
         const note = document.getElementById("guestNote").value.trim();
         if (!name || !generatedLink) return;
+
         const guest = {
           name,
           note,
@@ -1308,18 +1309,71 @@
           status: "pending",
           guests: 2,
         };
+
         savedLinks.push(guest);
         localStorage.setItem(
           STORAGE_KEY + "_links",
           JSON.stringify(savedLinks)
         );
+
+        // Lưu lên Google Sheets
+        try {
+          await fetch(API_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type: "link",
+              name: name,
+              link: generatedLink,
+              note: note,
+              guestKey: guest.key,
+              timestamp: new Date().toISOString(),
+            }),
+          });
+        } catch (e) {
+          console.log("Cannot save link to sheet");
+        }
+
         renderSavedGuests();
         showToast("✓ Đã lưu " + name);
+
         document.getElementById("guestNameInput").value = "";
         document.getElementById("guestNote").value = "";
         document.getElementById("linkOutput").classList.remove("show");
         document.getElementById("addToListBtn").style.display = "none";
         generatedLink = "";
+      }
+
+      async function loadLinksFromSheet() {
+        try {
+          const response = await fetch(API_URL + "?type=links");
+          const links = await response.json();
+
+          if (links && links.length > 0) {
+            const existingKeys = new Set(savedLinks.map((l) => l.key));
+            links.forEach((link) => {
+              if (!existingKeys.has(link.GuestKey)) {
+                savedLinks.push({
+                  name: link.Name,
+                  note: link.Note,
+                  link: link.Link,
+                  key: link.GuestKey,
+                  addedAt: link.Timestamp,
+                  status: "pending",
+                  guests: 2,
+                });
+              }
+            });
+            localStorage.setItem(
+              STORAGE_KEY + "_links",
+              JSON.stringify(savedLinks)
+            );
+            renderSavedGuests();
+          }
+        } catch (e) {
+          console.log("Cannot load links from sheet");
+        }
       }
 
       function renderSavedGuests() {
@@ -1618,14 +1672,17 @@
       }
 
       // ===== INIT =====
-      (function () {
+      (async function () {
+        await loadLinksFromSheet(); 
         renderSavedGuests();
+
         // Load RSVP count for badge
         const cached = JSON.parse(
           localStorage.getItem(STORAGE_KEY + "_rsvp") || "[]"
         );
-        if (cached.length)
+        if (cached.length) {
           document.getElementById("rsvpCount").textContent = cached.length;
+        }
       })();
     </script>
   </body>
