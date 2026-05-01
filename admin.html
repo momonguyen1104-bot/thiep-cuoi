@@ -1152,38 +1152,51 @@
           const card = document.createElement("div");
           card.className = "guest-card";
           card.innerHTML = `
-      <div class="guest-avatar ${status}">${initials}</div>
-      <div class="guest-info">
-        <div class="guest-name">${escapeHtml(g.name || "")}</div>
+    <div class="guest-avatar ${status}">${initials}</div>
+    <div class="guest-info">
+      <div class="guest-name">${escapeHtml(g.name || "")}</div>
+      ${
+        g.inviteeName && g.inviteeName !== g.name
+          ? `<div class="guest-invite-name">Mời: ${escapeHtml(
+              g.inviteeName
+            )}</div>`
+          : ""
+      }
+      <div class="guest-meta">
+        <span class="badge badge-${status}">${statusLabel}</span>
         ${
-          g.inviteeName && g.inviteeName !== g.name
-            ? `<div class="guest-invite-name">Mời với tên: ${escapeHtml(
-                g.inviteeName
-              )}</div>`
+          g.guests
+            ? `<span class="badge badge-count">👥 ${g.guests} người</span>`
             : ""
         }
-        <div class="guest-meta">
-          <span class="badge badge-${status}">${statusLabel}</span>
-          ${
-            g.guests
-              ? `<span class="badge badge-count">👥 ${g.guests} người</span>`
-              : ""
-          }
-          ${g.note ? `<span class="badge">📝 ${escapeHtml(g.note)}</span>` : ""}
-        </div>
+        ${
+          g.note
+            ? `<span class="badge" style="background:var(--cream-warm);color:var(--brown-soft)">💬 ${escapeHtml(
+                g.note
+              )}</span>`
+            : ""
+        }
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
-        <div style="font-size:11px;color:var(--text-muted)">${timeStr}</div>
-        <div style="display:flex;gap:6px">
-          <button class="btn btn-sm btn-secondary" onclick="editGuest('${escapeHtml(
-            g.guestKey || ""
-          )}')">✏</button>
-          <button class="btn btn-sm btn-danger" onclick="deleteGuest('${escapeHtml(
-            g.guestKey || ""
-          )}')">🗑</button>
-        </div>
+      ${
+        g.adminNote
+          ? `<div style="font-size:10px;color:var(--green-soft);margin-top:6px;border-top:1px solid var(--border);padding-top:4px">📝 Admin: ${escapeHtml(
+              g.adminNote
+            )}</div>`
+          : ""
+      }
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0">
+      <div style="font-size:11px;color:var(--text-muted)">${timeStr}</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm btn-secondary" onclick="editGuest('${escapeHtml(
+          g.guestKey || ""
+        )}')">✏</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteGuest('${escapeHtml(
+          g.guestKey || ""
+        )}')">🗑</button>
       </div>
-    `;
+    </div>
+  `;
           list.appendChild(card);
         });
       }
@@ -1325,13 +1338,27 @@
           row.className = "saved-guest-row";
           row.innerHTML = `
       <div class="saved-guest-status ${status}"></div>
-      <div style="flex:1"><div>${g.name}</div>${
-            g.note
-              ? `<div style="font-size:11px;color:var(--text-muted)">${g.note}</div>`
-              : ""
-          }</div>
-      <button class="btn btn-sm btn-copy" onclick="copySpecificLink(${i})">📋</button>
-      <button class="btn btn-sm btn-secondary" onclick="removeSavedGuest(${i})">✕</button>
+      <div style="flex:1">
+        <div style="font-weight:500">${escapeHtml(g.name)}</div>
+        ${
+          g.note
+            ? `<div style="font-size:11px;color:var(--green-soft);margin-top:2px">📝 ${escapeHtml(
+                g.note
+              )}</div>`
+            : ""
+        }
+        ${
+          rsvp && rsvp.note
+            ? `<div style="font-size:11px;color:var(--brown-soft);margin-top:2px">💬 Khách: ${escapeHtml(
+                rsvp.note
+              )}</div>`
+            : ""
+        }
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm btn-copy" onclick="copySpecificLink(${i})">📋</button>
+        <button class="btn btn-sm btn-secondary" onclick="removeSavedGuest(${i})">✕</button>
+      </div>
     `;
           list.appendChild(row);
         });

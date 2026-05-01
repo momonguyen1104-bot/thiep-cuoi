@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đình Thuần & Diệp Phương - Thiệp Cưới</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Lato:wght@300;400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -22,6 +22,11 @@
         --brown-soft: #7a5c2e;
         --text-dark: #1a2d05;
         --text-mid: #2e4d10;
+        /* THÊM FONT VARIABLES */
+        --font-serif: "Playfair Display", "Cormorant Garamond",
+          "Times New Roman", serif;
+        --font-sans: "Inter", "Lato", system-ui, -apple-system,
+          BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       }
       * {
         margin: 0;
@@ -33,7 +38,7 @@
       }
       body {
         background: var(--green-deep);
-        font-family: "Lato", sans-serif;
+        font-family: var(--font-sans);
         color: var(--text-dark);
         min-height: 100vh;
         overflow-x: hidden;
@@ -145,7 +150,7 @@
         width: 100%;
         max-width: 220px;
         cursor: pointer;
-        font-family: "Lato", sans-serif;
+        font-family: var(--font-sans);
         transition: all 0.3s;
       }
       .open-btn:hover {
@@ -1086,13 +1091,17 @@
         padding: min(28px, 6vw);
       }
       .qr-grid {
-        display: grid;
+        /* display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: min(20px, 4vw);
+        gap: min(20px, 4vw); */
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
       @media (max-width: 400px) {
         .qr-grid {
-          grid-template-columns: 1fr;
+          flex-direction: column;
+          gap: 16px;
         }
       }
       .qr-card {
@@ -1102,6 +1111,8 @@
         text-align: center;
         border: 1px solid rgba(107, 154, 58, 0.12);
         box-shadow: 0 2px 16px rgba(30, 61, 8, 0.06);
+        width: 100%;
+        max-width: 280px;
       }
       .qr-person {
         font-family: "Cormorant Garamond", serif;
@@ -1121,6 +1132,11 @@
         align-items: center;
         justify-content: center;
         border: 1px solid #eee;
+      }
+      .qr-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
       }
       .qr-name {
         font-size: clamp(12px, 3vw, 14px);
@@ -1745,7 +1761,7 @@
                 margin-bottom: 3px;
               "
             >
-              06 tháng 6, 2026
+              20 tháng 5, 2026
             </div>
             <div
               style="
@@ -1757,7 +1773,7 @@
                 margin-bottom: min(16px, 4vw);
               "
             >
-              6/6/2026
+              20/5/2026
             </div>
             <div
               style="
@@ -1840,7 +1856,7 @@
             <div class="hero-ornament-icon">❦</div>
           </div>
           <div class="hero-date-block">
-            <div class="hero-date">Thứ Bảy, 06 tháng 06 năm 2026</div>
+            <div class="hero-date">Thứ Tư, 20 tháng 05 năm 2026</div>
           </div>
           <p class="hero-quote">
             "Hạnh phúc không phải là điểm đến, mà là con đường chúng ta đi cùng
@@ -1896,7 +1912,7 @@
           <div class="section-divider"><span>✦</span></div>
         </div>
         <div class="event-cards">
-          <div class="event-card" data-delay="0">
+          <!-- <div class="event-card" data-delay="0">
             <div class="event-type">Lễ Thành Hôn</div>
             <div class="event-title">
               Lễ thành hôn được cử hành tại<br />Tư Gia
@@ -1944,12 +1960,10 @@
                 <span>25 Ngõ 12 Đặng Văn Ngữ, Đống Đa, Hà Nội</span>
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="event-card" data-delay="150">
             <div class="event-type">Tiệc Cưới</div>
-            <div class="event-title">
-              Tiệc cưới sẽ tổ chức tại<br />Tư Gia
-            </div>
+            <div class="event-title">Tiệc cưới sẽ tổ chức tại<br />Tư Gia</div>
             <div class="event-details">
               <div class="event-detail">
                 <svg
@@ -1964,7 +1978,7 @@
                   <line x1="8" y1="2" x2="8" y2="6" />
                   <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
-                <span>Thứ Bảy, 06 tháng 06 năm 2026</span>
+                <span>Thứ Tư, 20 tháng 05 năm 2026</span>
               </div>
               <div class="event-detail">
                 <svg
@@ -1977,7 +1991,7 @@
                   <circle cx="12" cy="12" r="10" />
                   <polyline points="12,6 12,12 16,14" />
                 </svg>
-                <span>Đón khách: 17:00 — Khai tiệc: 18:00</span>
+                <span>Đón khách: 10:00 — Khai tiệc: 11:00</span>
               </div>
               <div class="event-detail">
                 <svg
@@ -1990,9 +2004,7 @@
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                   <circle cx="12" cy="10" r="3" />
                 </svg>
-                <span
-                  >59 Mai Dương, P. Bình Định, Tỉnh Gia Lai</span
-                >
+                <span>59 Mai Dương, P. Bình Định, Tỉnh Gia Lai</span>
               </div>
             </div>
           </div>
@@ -2153,9 +2165,9 @@
           <button class="map-tab active" onclick="switchMap('party')">
             🏮 Tiệc Cưới
           </button>
-          <button class="map-tab" onclick="switchMap('ceremony')">
+          <!-- <button class="map-tab" onclick="switchMap('ceremony')">
             🌿 Lễ Thành Hôn
-          </button>
+          </button> -->
         </div>
         <div class="map-frame-wrap active" id="mapParty">
           <iframe
@@ -2180,18 +2192,14 @@
             Mở Google Maps
           </a>
         </div>
-        <div class="map-frame-wrap" id="mapCeremony">
+        <!-- <div class="map-frame-wrap" id="mapCeremony">
           <iframe
             src=""
             allowfullscreen
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
           ></iframe>
-          <a
-            class="map-open-btn"
-            href=""
-            target="_blank"
-          >
+          <a class="map-open-btn" href="" target="_blank">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path
                 d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
@@ -2199,7 +2207,7 @@
             </svg>
             Mở Google Maps
           </a>
-        </div>
+        </div> -->
       </section>
 
       <!-- GIFT BOX -->
@@ -2233,17 +2241,23 @@
           </div>
           <div class="modal-body">
             <div class="qr-grid">
-              <div class="qr-card">
+              <!-- <div class="qr-card">
                 <div class="qr-person">Chú Rể – Đình Thuần</div>
                 <div class="qr-img-wrap" id="qrGroom"></div>
                 <div class="qr-name">Nguyễn Đình Thuần</div>
                 <div class="qr-bank">VietinBank · 8866886688</div>
-              </div>
+              </div> -->
               <div class="qr-card">
                 <div class="qr-person">Cô Dâu – Diệp Phương</div>
-                <div class="qr-img-wrap" id="qrBride"></div>
+                <div class="qr-img-wrap" id="qrBride">
+                  <img
+                    src="images/anhQR.jfif"
+                    alt="QR Code Diệp Phương"
+                    style="width: 100%; height: 100%; object-fit: contain"
+                  />
+                </div>
                 <div class="qr-name">Nguyễn Lê Diệp Phương</div>
-                <div class="qr-bank">BIDV · 6665558888</div>
+                <div class="qr-bank">VCB · 0281000630119</div>
               </div>
             </div>
             <p
@@ -2285,12 +2299,13 @@
               id="rsvpName"
               placeholder="Họ tên của bạn *"
             />
-            <!-- <input
-              class="rsvp-phone-input"
-              type="tel"
-              id="rsvpPhone"
-              placeholder="Số điện thoại (tùy chọn)"
-            /> -->
+            <input
+              class="rsvp-name-input"
+              type="text"
+              id="rsvpNote"
+              placeholder="Lời chúc / Ghi chú (tùy chọn)"
+              style="margin-bottom: 12px"
+            />
             <div class="rsvp-guests-row">
               <label>Số người tham dự</label>
               <select class="rsvp-guests-select" id="rsvpGuests">
@@ -2354,7 +2369,7 @@
       <!-- FOOTER -->
       <footer class="footer">
         <div class="footer-monogram">ĐT &amp; DP</div>
-        <div class="footer-text">06 · 06 · 2026 · Gia Lai</div>
+        <div class="footer-text">20 · 05 · 2026 · Gia Lai</div>
         <div
           style="
             margin-top: 24px;
@@ -2422,7 +2437,7 @@
 
     <script>
       // ===== CONFIG =====
-      const WEDDING_DATE = new Date("2026-06-06T18:00:00+07:00");
+      const WEDDING_DATE = new Date("2026-05-20T11:00:00+07:00");
       const STORAGE_KEY_RSVP = "wedding_rsvp_DT_DP_2026";
       const STORAGE_KEY_WISHES = "wedding_wishes_DT_DP_2026";
 
@@ -2641,7 +2656,7 @@
 
       async function submitRsvp() {
         const name = document.getElementById("rsvpName").value.trim();
-        // const phone = document.getElementById("rsvpPhone").value.trim();
+        const note = document.getElementById("rsvpNote")?.value.trim() || ""; // Note từ khách (nếu có)
         const guests = document.getElementById("rsvpGuests").value;
 
         if (!name) {
@@ -2659,13 +2674,12 @@
 
         const rsvpData = {
           name: name,
-          //   phone: phone,
           guests: guests,
           attending: rsvpChoice,
           guestKey: guestKey || "guest_" + Date.now(),
           timestamp: new Date().toISOString(),
           inviteeName: guestNameParam || name,
-          note: "",
+          note: note,
         };
 
         try {
@@ -2686,7 +2700,7 @@
           showRsvpSuccess(name, rsvpChoice, guests, false);
           showToast(
             rsvpChoice === "yes"
-              ? "🎊 Cảm ơn " + name + "! Hẹn gặp ngày 06/06/2026!"
+              ? "🎊 Cảm ơn " + name + "! Hẹn gặp ngày 20/05/2026!"
               : "💌 Cảm ơn " + name + " đã phản hồi!"
           );
 
@@ -2694,6 +2708,7 @@
           rsvpChoice = null;
           document.getElementById("rsvpYes").classList.remove("selected");
           document.getElementById("rsvpNo").classList.remove("selected");
+          document.getElementById("rsvpNote").value = "";
         } catch (error) {
           console.error("RSVP error:", error);
           showToast("⚠️ Có lỗi xảy ra, vui lòng thử lại sau!");
@@ -2714,9 +2729,16 @@
           attending === "yes"
             ? `Cảm ơn <strong>${name}</strong>!<br>Chúng mình rất vui được đón tiếp bạn!`
             : `Cảm ơn <strong>${name}</strong> đã thông báo.<br>Chúng mình sẽ nhớ bạn!`;
+        // Thêm hiển thị note nếu có
+        let noteHtml = "";
+        if (note) {
+          noteHtml = `<div style="font-size:12px;margin-top:12px;padding:8px 12px;background:rgba(255,255,255,0.1);border-radius:8px">💬 "${escapeHtml(
+            note
+          )}"</div>`;
+        }
         document.getElementById("rsvpSuccessSub").innerHTML =
           attending === "yes"
-            ? `📅 06/06/2026 · 17:00<br>👥 ${guests} người`
+            ? `📅 20/05/2026 · 10:00<br>👥 ${guests} người`
             : "Chúc bạn mọi điều tốt đẹp!";
       }
 
@@ -2812,16 +2834,7 @@
         document.getElementById("giftModal").classList.remove("open");
       }
       function generateQRCodes() {
-        const g = document.getElementById("qrGroom"),
-          b = document.getElementById("qrBride");
-        if (g && !g.querySelector("canvas")) {
-          g.innerHTML =
-            '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;font-size:11px;color:#999;gap:4px"><div style="font-size:28px">🏦</div><div>VietinBank</div><div style="font-weight:600;color:#555">8866886688</div></div>';
-        }
-        if (b && !b.querySelector("canvas")) {
-          b.innerHTML =
-            '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;font-size:11px;color:#999;gap:4px"><div style="font-size:28px">🏦</div><div>BIDV</div><div style="font-weight:600;color:#555">6665558888</div></div>';
-        }
+        // QR code đã được nhúng sẵn dưới dạng hình ảnh, nếu muốn tạo động có thể sử dụng thư viện như QRCode.js
       }
 
       // ===== MAP =====
