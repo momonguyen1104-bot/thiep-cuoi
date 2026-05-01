@@ -1351,6 +1351,9 @@
           const response = await fetch(API_URL + "?type=links");
           const links = await response.json();
 
+          //xóa sạch local trước khi load mới
+          savedLinks = [];
+
           if (links && links.length > 0) {
             const existingKeys = new Set(savedLinks.map((l) => l.key));
             links.forEach((link) => {
