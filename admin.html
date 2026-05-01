@@ -771,7 +771,8 @@
             <input
               type="text"
               id="batchUrl"
-              placeholder="https://yourdomain.com/thiep.html"
+              placeholder="Đường dẫn trang thiệp"
+              value="https://thiep-cuoi-lilac.vercel.app/"
             />
           </div>
           <button class="btn btn-primary" onclick="generateBatch()">
@@ -1446,39 +1447,93 @@
 
       // ===== BATCH GENERATOR =====
       let batchLinks = [];
-      function generateBatch() {
+
+      async function generateBatch() {
         const names = document
           .getElementById("batchNames")
           .value.split("\n")
           .map((n) => n.trim())
           .filter((n) => n);
         const url = document.getElementById("batchUrl").value.trim();
+
         if (!names.length || !url) {
           showToast("Vui lòng nhập đầy đủ");
           return;
         }
-        batchLinks = names.map((name) => ({
-          name,
-          key: generateKey(name),
-          link:
-            url +
-            "?ten=" +
-            encodeURIComponent(name) +
-            "&key=" +
-            generateKey(name),
-        }));
+
+        batchLinks = [];
+
+        // Tạo từng link và lưu
+        for (const name of names) {
+          const key = generateKey(name);
+          const link = url + "?ten=" + encodeURIComponent(name) + "&key=" + key;
+
+          batchLinks.push({ name, key, link });
+
+          const guest = {
+            name: name,
+            note: "",
+            link: link,
+            key: key,
+            addedAt: new Date().toISOString(),
+            status: "pending",
+            guests: 2,
+          };
+
+          savedLinks.push(guest);
+
+          // Lưu lên Google Sheets
+          try {
+            await fetch(API_URL, {
+              method: "POST",
+              mode: "no-cors",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                type: "link",
+                name: name,
+                link: link,
+                note: "",
+                guestKey: key,
+                timestamp: new Date().toISOString(),
+              }),
+            });
+          } catch (e) {
+            console.log("Cannot save link to sheet for:", name);
+          }
+        }
+
+        // Lưu vào localStorage
+        localStorage.setItem(
+          STORAGE_KEY + "_links",
+          JSON.stringify(savedLinks)
+        );
+
+        // Hiển thị danh sách link đã tạo
         const list = document.getElementById("batchList");
         list.innerHTML = "";
         batchLinks.forEach((g, i) => {
           const div = document.createElement("div");
           div.style.cssText =
             "background:var(--cream-warm);border-radius:10px;padding:12px 14px;";
-          div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><span>${g.name}</span><button class="btn btn-sm btn-copy" onclick="copySingleBatch(${i})">📋</button></div>`;
+          div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <span style="font-weight:500;min-width:120px">${escapeHtml(
+          g.name
+        )}</span>
+        <span style="font-size:11px;color:var(--text-muted);word-break:break-all;flex:1">${
+          g.link
+        }</span>
+        <button class="btn btn-sm btn-copy" onclick="copySingleBatch(${i})">📋</button>
+      </div>
+    `;
           list.appendChild(div);
         });
+
         document.getElementById("batchOutput").style.display = "block";
-        showToast("✓ Đã tạo " + batchLinks.length + " link!");
+        renderSavedGuests(); // Cập nhật danh sách khách đã lưu
+        showToast("✓ Đã tạo và lưu " + batchLinks.length + " link!");
       }
+
       function copySingleBatch(i) {
         navigator.clipboard
           .writeText(batchLinks[i].link)
@@ -1673,7 +1728,7 @@
 
       // ===== INIT =====
       (async function () {
-        await loadLinksFromSheet(); 
+        await loadLinksFromSheet();
         renderSavedGuests();
 
         // Load RSVP count for badge
