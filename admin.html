@@ -710,7 +710,12 @@
 
           <div class="field">
             <label>File thiệp (đường dẫn)</label>
-            <input type="text" id="weddingUrl" placeholder="Đường dẫn trang thiệp" value="https://thiep-cuoi-lilac.vercel.app/"/>
+            <input
+              type="text"
+              id="weddingUrl"
+              placeholder="Đường dẫn trang thiệp"
+              value="https://thiep-cuoi-lilac.vercel.app/"
+            />
           </div>
 
           <div style="display: flex; gap: 10px; flex-wrap: wrap">
@@ -1492,15 +1497,26 @@
       }
 
       async function deleteGuest(key) {
-        if (!confirm("Xóa khách này?")) return;
+        if (!confirm("Xóa khách này khỏi danh sách?")) return;
+
+        // Xóa khỏi localStorage
         allGuests = allGuests.filter((g) => (g.guestKey || "") !== key);
+
         const manuals = JSON.parse(
           localStorage.getItem(STORAGE_KEY + "_manual") || "[]"
         ).filter((g) => g.guestKey !== key);
         localStorage.setItem(STORAGE_KEY + "_manual", JSON.stringify(manuals));
+
+        // Xóa trên Google Sheets
+        try {
+          await fetch(API_URL + "?delete=" + key, { method: "DELETE" });
+        } catch (e) {
+          console.log("Cannot delete from sheet");
+        }
+
         updateStats();
         renderGuestList(allGuests);
-        showToast("Đã xóa");
+        showToast("Đã xóa khách");
       }
 
       function openAddGuestModal() {
