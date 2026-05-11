@@ -1469,28 +1469,36 @@
           return;
         }
 
+        // Khóa nút, hiện loading
+        const btn = document.querySelector(
+          "#panel-links .card:nth-child(2) .btn-primary"
+        );
+        btn.disabled = true;
+        btn.textContent = `⏳ Đang tạo 0/${names.length}...`;
+
         batchLinks = [];
 
-        // Tạo từng link và lưu
-        for (const name of names) {
+        for (let i = 0; i < names.length; i++) {
+          const name = names[i];
+
+          // Cập nhật tiến độ
+          btn.textContent = `⏳ Đang tạo ${i + 1}/${names.length}...`;
+
           const key = generateKey(name);
           const link = url + "?ten=" + encodeURIComponent(name) + "&key=" + key;
-
           batchLinks.push({ name, key, link });
 
           const guest = {
-            name: name,
+            name,
             note: "",
-            link: link,
-            key: key,
+            link,
+            key,
             addedAt: new Date().toISOString(),
             status: "pending",
             guests: 2,
           };
-
           savedLinks.push(guest);
 
-          // Lưu lên Google Sheets
           try {
             await fetch(API_URL, {
               method: "POST",
@@ -1498,8 +1506,8 @@
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 type: "link",
-                name: name,
-                link: link,
+                name,
+                link,
                 note: "",
                 guestKey: key,
                 timestamp: new Date().toISOString(),
@@ -1510,13 +1518,12 @@
           }
         }
 
-        // Lưu vào localStorage
         localStorage.setItem(
           STORAGE_KEY + "_links",
           JSON.stringify(savedLinks)
         );
 
-        // Hiển thị danh sách link đã tạo
+        // Hiển thị kết quả
         const list = document.getElementById("batchList");
         list.innerHTML = "";
         batchLinks.forEach((g, i) => {
@@ -1538,10 +1545,15 @@
         });
 
         document.getElementById("batchOutput").style.display = "block";
-        renderSavedGuests(); // Cập nhật danh sách khách đã lưu
+        renderSavedGuests();
+
+        // Mở khóa nút, báo xong
+        btn.disabled = false;
+        btn.textContent = "🚀 Tạo tất cả link";
         showToast("✓ Đã tạo và lưu " + batchLinks.length + " link!");
       }
 
+      
       function copySingleBatch(i) {
         navigator.clipboard
           .writeText(batchLinks[i].link)
