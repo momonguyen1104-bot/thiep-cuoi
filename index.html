@@ -2115,7 +2115,16 @@
             <div class="gallery-num">VI</div>
           </div>
         </div>
-        <span class="section-label" style="text-align: center; display: block; margin-top: 12px; opacity: 0.6; font-size: 13px">
+        <span
+          class="section-label"
+          style="
+            text-align: center;
+            display: block;
+            margin-top: 12px;
+            opacity: 0.6;
+            font-size: 13px;
+          "
+        >
           Bấm để xem
         </span>
       </section>
@@ -2526,10 +2535,27 @@
           startCountdown();
           initScrollObserver();
           initNavDots();
+          // Ping khi mở thiệp
+          if (guestKey) {
+            fetch(API_URL, {
+              method: "POST",
+              mode: "no-cors",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                type: "rsvp",
+                name: guestNameParam || "Khách",
+                guests: "?",
+                attending: "pending",
+                guestKey: guestKey,
+                timestamp: new Date().toISOString(),
+                inviteeName: guestNameParam || "",
+                note: "",
+              }),
+            }).catch(() => {});
+          }
           tryAutoPlayMusic();
           loadWishesFromSheet();
         }, 800);
-
       }
 
       // ===== PETALS =====

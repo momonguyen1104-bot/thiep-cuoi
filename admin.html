@@ -844,6 +844,10 @@
             <div class="stat-num muted" id="statGuests">0</div>
             <div class="stat-label">Tổng người dự</div>
           </div>
+          <div class="stat-card">
+            <div class="stat-num" id="statUnopened" style="color: #999">0</div>
+            <div class="stat-label">Chưa mở thiệp</div>
+          </div>
         </div>
 
         <!-- Filter -->
@@ -1077,6 +1081,7 @@
           document.getElementById("rsvpCount").textContent = allGuests.filter(
             (g) => g.attending === "yes"
           ).length;
+          await loadUnopenedGuests();
         } catch (e) {
           console.error(e);
           allGuests = JSON.parse(
@@ -1742,6 +1747,79 @@
           document.getElementById("rsvpCount").textContent = cached.length;
         }
       })();
+
+      // ===== UNOPENED GUESTS =====
+      async function loadUnopenedGuests() {
+        try {
+          const [linksRes, rsvpRes] = await Promise.all([
+            fetch(API_URL + "?type=links"),
+            fetch(API_URL + "?type=rsvp"),
+          ]);
+          const links = await linksRes.json();
+          const rsvp = await rsvpRes.json();
+
+          const rsvpKeys = new Set(rsvp.map((r) => r.GuestKey));
+          const unopened = links.filter((l) => !rsvpKeys.has(l.GuestKey));
+
+          // Cập nhật stat
+          document.getElementById("statUnopened").textContent = unopened.length;
+
+          // Hiển thị danh sách nếu có
+          renderUnopenedList(unopened);
+        } catch (e) {
+          console.log("Cannot load unopened:", e);
+        }
+      }
+
+      // Hiển thị danh sách khách chưa mở thiệp
+      function renderUnopenedList(unopened) {
+        // Xóa list cũ nếu có
+        const existing = document.getElementById("unopenedCard");
+        if (existing) existing.remove();
+        if (!unopened.length) return;
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.id = "unopenedCard";
+        card.innerHTML = `
+    <div class="card-title" style="color:var(--text-muted)">
+      ⚫ Chưa mở thiệp (${unopened.length})
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${unopened
+        .map(
+          (g) => `
+        <div style="display:flex;align-items:center;gap:12px;
+                    padding:10px 0;border-bottom:1px solid var(--border)">
+          <div style="width:8px;height:8px;border-radius:50%;
+                      background:#ccc;flex-shrink:0"></div>
+          <div style="flex:1">
+            <div style="font-weight:500">${escapeHtml(g.Name || "")}</div>
+            ${
+              g.Note
+                ? `<div style="font-size:11px;color:var(--text-muted)">${escapeHtml(
+                    g.Note
+                  )}</div>`
+                : ""
+            }
+          </div>
+          <button class="btn btn-sm btn-copy" 
+                  onclick="navigator.clipboard.writeText('${escapeHtml(
+                    g.Link || ""
+                  )}')
+                           .then(()=>showToast('✓ Đã copy link'))">
+            📋 Copy link
+          </button>
+        </div>
+      `
+        )
+        .join("")}
+    </div>
+  `;
+
+        // Thêm vào cuối tab RSVP
+        document.getElementById("panel-rsvp").appendChild(card);
+      }
     </script>
   </body>
 </html>
