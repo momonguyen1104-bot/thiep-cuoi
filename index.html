@@ -2792,14 +2792,18 @@
           return;
         }
 
+        // Khóa nút
+        const btn = document.querySelector(".form-btn");
+        btn.disabled = true;
+        btn.textContent = "Đang gửi...";
+
         try {
-          // Gửi lên Google Sheets
           await fetch(API_URL, {
             method: "POST",
             mode: "no-cors",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              type: "wish", // ← THÊM DÒNG NÀY
+              type: "wish",
               name: name,
               message: text,
               guestKey: guestKey || "guest_" + Date.now(),
@@ -2807,7 +2811,6 @@
             }),
           });
 
-          // Lưu local backup
           const wishes = JSON.parse(
             localStorage.getItem(STORAGE_KEY_WISHES) || "[]"
           );
@@ -2819,7 +2822,6 @@
           });
           localStorage.setItem(STORAGE_KEY_WISHES, JSON.stringify(wishes));
 
-          // Tải lại danh sách từ Sheet
           await loadWishesFromSheet();
 
           document.getElementById("wishName").value = "";
@@ -2829,6 +2831,10 @@
           console.error("Lỗi gửi lời chúc:", error);
           showToast("⚠️ Có lỗi xảy ra, vui lòng thử lại!");
         }
+
+        // Mở khóa nút
+        btn.disabled = false;
+        btn.textContent = "Gửi Lời Chúc";
       }
 
       // Thêm hàm loadWishesFromSheet
